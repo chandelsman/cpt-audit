@@ -4,15 +4,15 @@ library(lubridate)
 library(here)
 
 ### SET START DATE ###
-st_date <- date("2021-01-01")
+st_date <- date("2022-01-01")
 
 ### SET END DATE ###
-end_date <- date("2021-03-31")
+end_date <- date("2022-03-31")
 
 # make sampling function to include at least one accession when n < 10
-sample_up <- function(.data, frac) {
-  sample_n(.data, ceiling({{frac}} * n()) )
-}
+# sample_up <- function(.data, frac) {
+#   sample_n(.data, ceiling({{frac}} * n()) )
+# }
 
 # Import raw data
 cases_raw <- 
@@ -32,7 +32,8 @@ cases_clean <-
          !str_detect(PATHOLOGIST, "^\\[x\\]")) %>% 
   select(PATHOLOGIST, `RESULT ID`, Create, CPTS) %>% 
   group_by(PATHOLOGIST) %>% 
-  sample_up(0.01)
+  sample_n(3)
+  # sample_up(0.01)
 
 # Export results to review
 writexl::write_xlsx(cases_clean,
