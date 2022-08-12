@@ -22,18 +22,39 @@ cases_raw <-
   sapply(readxl::read_excel, simplify = FALSE) %>% 
   bind_rows()
 
+# Generate list of pathologists to include
+pathologists <-
+  cases_raw %>%
+  filter(
+    !str_detect(PATHOLOGIST, "^\\[x\\]"),
+    !str_detect(PATHOLOGIST, "^Admin"),
+    !str_detect(PATHOLOGIST, "^Caufield"),
+    !str_detect(PATHOLOGIST, "^Cullen"),
+    !str_detect(PATHOLOGIST, "^Leidy"),
+    !str_detect(PATHOLOGIST, "^Lillis"),
+    !str_detect(PATHOLOGIST, "^Sbicca"),
+    !str_detect(PATHOLOGIST, "^Stearns"),
+    !str_detect(PATHOLOGIST, "^Vogt"),
+    !str_detect(PATHOLOGIST, "^Hoover")
+  ) %>%
+  select(PATHOLOGIST) %>% 
+  distinct() %>% 
+  as_vector()
+
 # Clean data and select 1% of cases per pathologist
 cases_clean <-
   cases_raw %>%
   mutate(Create = date(mdy_hm(Create))) %>%
   filter(
-    Create >= st_date & Create <= end_date,!str_detect(PATHOLOGIST, "^\\[x\\]"),
+    Create >= st_date &
+      Create <= end_date,
+    !str_detect(PATHOLOGIST, "^\\[x\\]"),
     PATHOLOGIST %in% pathologists
   ) %>%
   select(PATHOLOGIST, `RESULT ID`, Create, CPTS) %>%
   group_by(PATHOLOGIST) %>%
   sample_n(10)
-  # sample_up(0.01)
+# sample_up(0.01)
 
 # Export results to review
 writexl::write_xlsx(cases_clean,
