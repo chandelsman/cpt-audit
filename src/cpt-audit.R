@@ -3,11 +3,15 @@ library(tidyverse)
 library(lubridate)
 library(here)
 
+######################
 ### SET START DATE ###
-st_date <- date("2022-04-01")
+######################
+st_date <- date("2023-01-01")
 
+####################
 ### SET END DATE ###
-end_date <- date("2022-06-30")
+####################
+end_date <- date("2023-02-28")
 
 # make sampling function to include at least one accession when n < 10
 # sample_up <- function(.data, frac) {
@@ -22,7 +26,7 @@ cases_raw <-
   sapply(readxl::read_excel, simplify = FALSE) %>% 
   bind_rows()
 
-# Generate list of pathologists to include
+# Generate list of pathologists to include in audit
 pathologists <-
   cases_raw %>%
   filter(
@@ -35,7 +39,9 @@ pathologists <-
     !str_detect(PATHOLOGIST, "^Sbicca"),
     !str_detect(PATHOLOGIST, "^Stearns"),
     !str_detect(PATHOLOGIST, "^Vogt"),
-    !str_detect(PATHOLOGIST, "^Hoover")
+    !str_detect(PATHOLOGIST, "^Hoover"),
+    !str_detect(PATHOLOGIST, "^Hibbert"),
+    !str_detect(PATHOLOGIST, "Pathologist, Test")
   ) %>%
   select(PATHOLOGIST) %>% 
   distinct() %>% 
@@ -44,11 +50,10 @@ pathologists <-
 # Clean data and select 1% of cases per pathologist
 cases_clean <-
   cases_raw %>%
-  mutate(Create = date(mdy_hm(Create))) %>%
+  mutate(Create = date(parse_date_time(Create, c("mdy HM", "mdy HMS")))) %>%
   filter(
     Create >= st_date &
-      Create <= end_date,
-    !str_detect(PATHOLOGIST, "^\\[x\\]"),
+      Create <= end_date,!str_detect(PATHOLOGIST, "^\\[x\\]"),
     PATHOLOGIST %in% pathologists
   ) %>%
   select(PATHOLOGIST, `RESULT ID`, Create, CPTS) %>%
