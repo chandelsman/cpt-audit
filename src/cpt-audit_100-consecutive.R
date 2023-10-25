@@ -1,14 +1,13 @@
 # load libraries
 library(tidyverse)
-library(lubridate)
 library(here)
 
 # Set parameters
 params <- 
   tibble(
-    dt_start = as.POSIXct("2023-08-01 00:00:01"),
-    dt_end = as.POSIXct("2023-08-31 11:59:59"),
-    path_id = "D"
+    dt_start = as.POSIXct("2023-10-01 00:00:01"),
+    dt_end = as.POSIXct("2023-10-31 11:59:59"),
+    path_id = "I"
   )
 
 # Import raw case data
