@@ -1,17 +1,16 @@
 # load libraries
 library(tidyverse)
-library(lubridate)
 library(here)
 
 ######################
 ### SET START DATE ###
 ######################
-st_date <- date("2023-04-01")
+st_date <- date("2023-07-01")
 
 ####################
 ### SET END DATE ###
 ####################
-end_date <- date("2023-06-30")
+end_date <- date("2023-09-30")
 
 # make sampling function to include at least one accession when n < 10
 # sample_up <- function(.data, frac) {
@@ -41,6 +40,7 @@ pathologists <-
     !str_detect(PATHOLOGIST, "^Vogt"),
     !str_detect(PATHOLOGIST, "^Hoover"),
     !str_detect(PATHOLOGIST, "^Hibbert"),
+    !str_detect(PATHOLOGIST, "^Shipman"),
     !str_detect(PATHOLOGIST, "Pathologist, Test")
   ) |>
   select(PATHOLOGIST) |> 
