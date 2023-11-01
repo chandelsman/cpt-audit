@@ -34,6 +34,7 @@ cases_clean <-
          original_release >= params$dt_start &
            original_release <= params$dt_end) |> 
   arrange(original_release) |> 
+  distinct() |> 
   slice(100:199)
 
 # Write data to a spreadsheet
